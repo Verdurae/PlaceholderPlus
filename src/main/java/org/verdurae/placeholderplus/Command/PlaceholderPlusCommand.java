@@ -14,7 +14,7 @@ public class PlaceholderPlusCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             sender.sendMessage("PlaceholderPlus：");
             sender.sendMessage("/pp 玩家名 set 变量名 数值");
             sender.sendMessage("/pp 玩家名 add 变量名 数值");
