@@ -47,10 +47,7 @@ public final class PlaceholderPlus extends JavaPlugin {
         logger.info("开始加载");
         dataFolder = new File(getDataFolder(), "PlayerData");
         dataFolder.mkdirs();
-        expansions.add(new ThisPlaceholder());
-        for (PlaceholderExpansion expansion : expansions) {
-            if (expansion.canRegister()) expansion.register();
-        }
+        PluginAPI.loadAllHolder();
         PluginAPI.loadOnlinePlayerData();
         getCommand("pp").setExecutor(new PlaceholderPlusCommand());
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
@@ -73,8 +70,6 @@ public final class PlaceholderPlus extends JavaPlugin {
     public void onDisable() {
         logger.info("插件卸载");
         PluginAPI.saveAllPlayerData();
-        for (PlaceholderExpansion expansion : expansions) {
-            expansion.unregister();
-        }
+        PluginAPI.unloadAllHolder();
     }
 }
