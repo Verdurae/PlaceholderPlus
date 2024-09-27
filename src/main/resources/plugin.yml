@@ -1,3 +1,9 @@
 name: PlaceholderPlus
 version: '${version}'
 main: org.verdurae.placeholderplus.PlaceholderPlus
+author: Kaminy
+depend:
+  - PlaceholderAPI
+website: https://github.com/Verdurae/PlaceholderPlus
+commands:
+  pp:

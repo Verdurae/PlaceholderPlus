@@ -1,0 +1,11 @@
+JsImportPacket:
+  "Bukkit": "org.bukkit.Bukkit"
+  "Arrays": "java.util.Arrays"
+  "PAPI": "me.clip.placeholderapi.PlaceholderAPI"
+
+Placeholders:
+  "test": "这是一个变量"
+  "test1": "这是另一个变量"
+  "test2": "最好不要留空"
+  "test3": "1"
+  "test4": "↑纯数值类型也是可以的，可以用指令和方法加减，但要保证是纯数字，可以有小数点"
