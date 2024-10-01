@@ -24,7 +24,7 @@ public class PlayerData {
         Map<String, Object> value = PlaceholderPlus.config.getValues(true);
         for (String key : value.keySet()) {
             if (key.startsWith("Placeholders.")) {
-                if (!data.contains(key.replace("Placeholders.", ""))) data.set(key.replace("Placeholders.", ""), value.get(key));
+                if (!data.contains(key.replace("Placeholders..", ""))) data.set(key.replace("Placeholders.", ""), value.get(key));
             }
         }
         return data;
