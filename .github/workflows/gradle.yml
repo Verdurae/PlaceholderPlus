@@ -31,7 +31,8 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         gradle-version: '8.7'
-        
+    - name: Refresh dependencies cache
+      run: gradle clean --refresh-dependencies
     - name: Build with Gradle
       run: gradle build
     # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
