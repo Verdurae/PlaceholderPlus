@@ -5,5 +5,6 @@ author: Kaminy
 depend:
   - PlaceholderAPI
 website: https://github.com/Verdurae/PlaceholderPlus
+folia-supported: true
 commands:
   pp:

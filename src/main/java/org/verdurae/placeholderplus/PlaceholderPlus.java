@@ -3,7 +3,6 @@ package org.verdurae.placeholderplus;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.verdurae.placeholderplus.API.PlayerAPI;
 import org.verdurae.placeholderplus.API.PluginAPI;
