@@ -3,6 +3,7 @@ package org.verdurae.placeholderplus.API;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.verdurae.placeholderplus.API.Abstract.SubJsPlaceholder;
@@ -96,6 +97,16 @@ public class PluginAPI {
     public static void unloadAllHolder() {
         for (PlaceholderExpansion expansion : PlaceholderPlus.expansions) {
             expansion.unregister();
+        }
+    }
+    public static void loadAllPlayerData() {
+        File[] files = PlaceholderPlus.dataFolder.listFiles();
+        if (files == null) return;
+        for (File file : files) {
+            if (!file.getName().endsWith(".yml")) continue;
+            String name = file.getName().replace(".yml", "");
+            YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
+            new PlayerData(name, data);
         }
     }
 }

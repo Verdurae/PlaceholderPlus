@@ -2,8 +2,10 @@ package org.verdurae.placeholderplus;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.verdurae.placeholderplus.API.PlayerAPI;
 import org.verdurae.placeholderplus.API.PluginAPI;
 import org.verdurae.placeholderplus.Command.PlaceholderPlusCommand;
@@ -20,7 +22,9 @@ public final class PlaceholderPlus extends JavaPlugin {
     public static boolean jsSupport = false;
     public static ArrayList<PlaceholderExpansion> expansions = new ArrayList<>();
     public static File dataFolder;
-    public static boolean autosave = true;
+    public static boolean autosave;
+    public static BukkitTask timer;
+    public static int timeCount = 0;
 
     @Override
     public void onLoad() {
@@ -39,6 +43,7 @@ public final class PlaceholderPlus extends JavaPlugin {
         }
         saveDefaultConfig();
         config = getConfig();
+        autosave = config.getBoolean("Task.SaveTask.enable");
     }
 
     @Override
@@ -47,22 +52,9 @@ public final class PlaceholderPlus extends JavaPlugin {
         dataFolder = new File(getDataFolder(), "PlayerData");
         dataFolder.mkdirs();
         PluginAPI.loadAllHolder();
-        PluginAPI.loadOnlinePlayerData();
+        PluginAPI.loadAllPlayerData();
         getCommand("pp").setExecutor(new PlaceholderPlusCommand());
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            while (isEnabled() && autosave) {
-                try {
-                    Thread.sleep(300000);
-                    logger.info("正在自动保存数据");
-                    for (PlayerData playerData : PlayerAPI.playerData.values()) {
-                        playerData.save();
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            autosave = true;
-        });
+        newTimer();
     }
 
     @Override
@@ -70,5 +62,31 @@ public final class PlaceholderPlus extends JavaPlugin {
         logger.info("插件卸载");
         PluginAPI.saveAllPlayerData();
         PluginAPI.unloadAllHolder();
+    }
+
+    public static void newTimer() {
+        timer = Bukkit.getScheduler().runTaskTimerAsynchronously(PlaceholderPlus.instance, () -> {
+            timeCount++;
+            System.out.println(timeCount);
+            if (PlaceholderPlus.config.getBoolean("Task.SaveTask.enable") && timeCount % PlaceholderPlus.config.getInt("Task.SaveTask.period") == 0) {
+                logger.info("正在自动保存数据");
+                for (PlayerData playerData : PlayerAPI.playerData.values()) {
+                    playerData.save();
+                }
+            }
+            ConfigurationSection updates = PlaceholderPlus.config.getConfigurationSection("Placeholders.update");
+            for (String update : updates.getKeys(false)) {
+                System.out.println(update);
+                System.out.println(PlaceholderPlus.config.getInt("Placeholders.update." + update + ".period"));
+                if (timeCount % PlaceholderPlus.config.getInt("Placeholders.update." + update + ".period") == 0) {
+                    for (PlayerData playerData : PlayerAPI.playerData.values()) {
+                        if (playerData.data.getInt("update." + update) < PlaceholderPlus.config.getInt("Placeholders.update." + update + ".max")) {
+                            FileConfiguration data = playerData.data;
+                            data.set("update." + update, data.getInt("update." + update) + PlaceholderPlus.config.getInt("Placeholders.update." + update + ".amount"));
+                        }
+                    }
+                }
+            }
+        }, 1, 20);
     }
 }

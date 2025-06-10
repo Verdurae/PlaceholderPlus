@@ -6,7 +6,8 @@ import org.verdurae.placeholderplus.API.PlayerAPI;
 import org.verdurae.placeholderplus.PlaceholderPlus;
 
 import java.io.IOException;
-import java.util.Map;
+
+import static org.verdurae.placeholderplus.PlaceholderPlus.config;
 
 public class PlayerData {
     public String name;
@@ -21,10 +22,14 @@ public class PlayerData {
     }
 
     public FileConfiguration defaultData(FileConfiguration data) {
-        Map<String, Object> value = PlaceholderPlus.config.getValues(true);
-        for (String key : value.keySet()) {
-            if (key.startsWith("Placeholders.")) {
-                if (!data.contains(key.replace("Placeholders.", ""))) data.set(key.replace("Placeholders.", ""), value.get(key));
+        for (String key : config.getStringList("Placeholders.normal")) {
+            if (!data.contains("normal." + key)) {
+                data.set("normal." + key, config.get("Placeholders.normal." + key));
+            }
+        }
+        for (String key : config.getStringList("Placeholders.update")) {
+            if (!data.contains("update." + key)) {
+                data.set("update." + key, config.get("Placeholders.update." + key + ".max"));
             }
         }
         return data;

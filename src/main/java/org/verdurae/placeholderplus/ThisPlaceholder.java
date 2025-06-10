@@ -8,9 +8,16 @@ import org.verdurae.placeholderplus.API.PlayerAPI;
 
 public class ThisPlaceholder extends PlaceholderExpansion {
     @Override
-    public @Nullable("null") String onRequest(OfflinePlayer player, @NotNull String params) {
-        String a = PlayerAPI.getPlayerData(player.getName()).getString(params);
-        return (a == null) ? PlaceholderPlus.config.getString("Placeholders." + params) : a;
+    public @Nullable("null") String onRequest(OfflinePlayer player, @NotNull String param) {
+        String[] params = param.split("_");
+        if (params[0].equals("normal")) {
+            String a = PlayerAPI.getPlayerData(player.getName()).getString("normal." + params[1]);
+            return (a == null) ? PlaceholderPlus.config.getString("Placeholders.normal." + params[1]) : a;
+        } else if (params[0].equals("update")) {
+            String a = PlayerAPI.getPlayerData(player.getName()).getString("update." + params[1]);
+            return (a == null) ? PlaceholderPlus.config.getString("Placeholders.update." + params[1] + ".max") : a;
+        }
+        return null;
     }
 
     @Override

@@ -12,6 +12,6 @@ public class MathAPI {
         } else if (formula.startsWith("/")) {
             return v / Double.parseDouble(formula.substring(1));
         }
-        return null;
+        return v;
     }
 }

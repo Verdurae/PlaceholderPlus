@@ -7,10 +7,10 @@ import org.verdurae.placeholderplus.Object.PlayerData;
 import org.verdurae.placeholderplus.PlaceholderPlus;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerAPI {
-    public static HashMap<String, PlayerData> playerData = new HashMap<>();
+    public static ConcurrentHashMap<String, PlayerData> playerData = new ConcurrentHashMap<>();
 
     public static FileConfiguration getPlayerData(String playername) {
         if (playerData.containsKey(playername)) return playerData.get(playername).data;
