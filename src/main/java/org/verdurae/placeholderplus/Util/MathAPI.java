@@ -1,4 +1,4 @@
-package org.verdurae.placeholderplus.API;
+package org.verdurae.placeholderplus.Util;
 
 public class MathAPI {
     public static <T extends Number> Number calculate(T number, String formula) {

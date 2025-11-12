@@ -2,7 +2,7 @@ package org.verdurae.placeholderplus.Object;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.verdurae.placeholderplus.API.PlayerAPI;
+import org.verdurae.placeholderplus.Util.PlayerAPI;
 import org.verdurae.placeholderplus.PlaceholderPlus;
 
 import java.io.IOException;

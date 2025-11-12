@@ -1,4 +1,4 @@
-package org.verdurae.placeholderplus.API;
+package org.verdurae.placeholderplus.Util;
 
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

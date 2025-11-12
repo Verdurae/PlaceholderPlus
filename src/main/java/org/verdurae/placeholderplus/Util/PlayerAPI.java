@@ -1,4 +1,4 @@
-package org.verdurae.placeholderplus.API;
+package org.verdurae.placeholderplus.Util;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

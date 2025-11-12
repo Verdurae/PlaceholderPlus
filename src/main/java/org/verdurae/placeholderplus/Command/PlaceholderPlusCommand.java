@@ -3,9 +3,9 @@ package org.verdurae.placeholderplus.Command;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.verdurae.placeholderplus.API.MathAPI;
-import org.verdurae.placeholderplus.API.PlayerAPI;
-import org.verdurae.placeholderplus.API.PluginAPI;
+import org.verdurae.placeholderplus.Util.MathAPI;
+import org.verdurae.placeholderplus.Util.PlayerAPI;
+import org.verdurae.placeholderplus.Util.PluginAPI;
 import org.verdurae.placeholderplus.PlaceholderPlus;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,6 +34,13 @@ public class PlaceholderPlusCommand implements CommandExecutor {
         } else {
             String holdername = args[2];
             String[] perms = holdername.split("_");
+            if (perms.length < 1) {
+                sender.sendMessage("请输入正确的变量名");
+                return false;
+            }
+            if (perms.length < 2) {
+                perms = new String[]{"normal", perms[0]};
+            }
             switch (args[1]) {
                 case "set":
                     PlayerAPI.getPlayerData(args[0]).set(perms[0] + "." + perms[1], args[3]);

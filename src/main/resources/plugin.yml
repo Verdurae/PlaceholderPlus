@@ -1,5 +1,6 @@
 name: PlaceholderPlus
 version: '${version}'
+api-version: 1.13
 main: org.verdurae.placeholderplus.PlaceholderPlus
 author: Kaminy
 depend:
