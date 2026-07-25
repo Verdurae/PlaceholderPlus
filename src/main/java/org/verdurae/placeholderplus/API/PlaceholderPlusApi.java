@@ -1,6 +1,7 @@
 package org.verdurae.placeholderplus.API;
 
-import org.verdurae.placeholderplus.Util.PlayerAPI;
+import org.verdurae.placeholderplus.PlaceholderPlus;
+import org.verdurae.placeholderplus.Util.PlayerUtil;
 
 /**
  * @author Kaminy
@@ -17,7 +18,10 @@ public class PlaceholderPlusApi {
      */
     public static String getPlaceholder(String player, String placeholder) {
         String[] perms = placeholder.split("_");
-        return PlayerAPI.getPlayerData(player).getString(perms[0] + "." + perms[1]);
+        if (perms.length == 1) perms = new String[]{"normal", perms[0]};
+        return PlayerUtil.getPlayerData(player).getString(perms[0] + "." + perms[1]) == null ?
+                PlaceholderPlus.config.getString("Placeholders." + perms[0] + "." + perms[1]) :
+                PlayerUtil.getPlayerData(player).getString(perms[0] + "." + perms[1]);
     }
 
     /**
@@ -29,6 +33,6 @@ public class PlaceholderPlusApi {
      */
     public static void setPlaceholder(String player, String placeholder, String value) {
         String[] perms = placeholder.split("_");
-        PlayerAPI.getPlayerData(player).set(perms[0] + "." + perms[1], value);
+        PlayerUtil.getPlayerData(player).set(perms[0] + "." + perms[1], value);
     }
 }

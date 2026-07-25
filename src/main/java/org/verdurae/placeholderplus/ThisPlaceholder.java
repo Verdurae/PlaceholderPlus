@@ -2,39 +2,74 @@ package org.verdurae.placeholderplus;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.verdurae.placeholderplus.Util.PlayerAPI;
+import org.verdurae.placeholderplus.Util.PlayerUtil;
+import org.verdurae.placeholderplus.Util.PluginUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ThisPlaceholder extends PlaceholderExpansion {
+    public final static List<String> placeholderTypes = Arrays.asList("normal", "update", "server");
+
     @Override
-    public @Nullable("null") String onRequest(OfflinePlayer player, @NotNull String param) {
+    public String onRequest(OfflinePlayer player, String param) {
         String[] params = param.split("_");
-        if (params.length < 2) {
+        String defaultValue = "未定义的变量";
+        for (String arg : params) {
+            if (arg.startsWith("d:")) {
+                defaultValue = arg.replaceFirst("d:", "");
+            }
+        }
+        if (!placeholderTypes.contains(params[0])) {
             params = new String[]{"normal", params[0]};
         }
-        if (params[0].equals("normal")) {
-            String a = PlayerAPI.getPlayerData(player.getName()).getString("normal." + params[1]);
-            return (a == null) ? PlaceholderPlus.config.getString("Placeholders.normal." + params[1]) : a;
-        } else if (params[0].equals("update")) {
-            String a = PlayerAPI.getPlayerData(player.getName()).getString("update." + params[1]);
-            return (a == null) ? PlaceholderPlus.config.getString("Placeholders.update." + params[1] + ".max") : a;
+        switch (params[0]) {
+            case "normal": {
+                String a = PlayerUtil.getPlayerData(player.getName()).getString("normal." + params[1]);
+                if (a == null) {
+                    a = PlaceholderPlus.config.getString("Placeholders.normal." + params[1]);
+                    if (a == null) {
+                        a = defaultValue;
+                    }
+                }
+                return a;
+            }
+            case "update": {
+                String a = PlayerUtil.getPlayerData(player.getName()).getString("update." + params[1]);
+                if (a == null) {
+                    a = PlaceholderPlus.config.getString("Placeholders.update." + params[1] + ".max");
+                    if (a == null) {
+                        a = defaultValue;
+                    }
+                }
+                return a;
+            }
+            case "server": {
+                String a = PluginUtil.serverData.getString(params[1]);
+                if (a == null) {
+                    a = PlaceholderPlus.config.getString("Placeholders.server." + params[1]);
+                    if (a == null) {
+                        a = defaultValue;
+                    }
+                }
+                return a;
+            }
         }
         return null;
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public String getIdentifier() {
         return "pp";
     }
 
     @Override
-    public @NotNull String getAuthor() {
+    public String getAuthor() {
         return "Kaminy";
     }
 
     @Override
-    public @NotNull String getVersion() {
+    public String getVersion() {
         return PlaceholderPlus.instance.getDescription().getVersion();
     }
 }

@@ -1,22 +1,43 @@
+Setting:
+  # 指令是否发送反馈消息
+  # 也可以在指令里添加参数m=false或m=true，指令参数优先级高于全服设置
+  message: true
+
+# 要给js变量导的包，新手不建议使用
 JsImportPacket:
   "Bukkit": "org.bukkit.Bukkit"
   "Arrays": "java.util.Arrays"
   "PAPI": "me.clip.placeholderapi.PlaceholderAPI"
 
+# 自定义变量
+# 最终解析的变量是%pp_变量类型_变量名%
 Placeholders:
+  # 常规变量
+  # 不具备对应变量玩家解析常规变量时会获得默认值（就是配置中写的值）
+  # 当通过指令或其他方式设置之后就会获得玩家自己的储存值
   normal:
-    "test": "这是一个变量"
+    "test": "这是一个变量" # 比如你想返回这个，就是%pp_normal_test% 或者 %pp_test% normal类型解析变量时可以省略normal
     "test1": "这是另一个变量"
     "test2": "最好不要留空"
     "test3": "1"
-    "test4": "↑纯数值类型也是可以的，可以用指令和方法加减，但要保证是纯数字，可以有小数点"
+    "test4": "↑纯数值类型也是可以的，可以用指令和方法加减，但要保证是纯数字，可以有负号和小数点"
+  # 脉冲变量
+  # 脉冲变量会自动变化 可以增加也可以减少 不会超过变量上限（无下限限制）
+  # 可以用来做体力之类的功能
   update:
-    update:
-      max: 160
-      period: 1
-      amount: 1
+    update: # %pp_update_update%
+      max: 160 # 自增上限，可以解析papi变量以将其他papi变量作为仅对该玩家该脉冲变量生效的上限，如%player_health%，也支持四则运算，比如10+%player_health%
+      period: 1 # 变化周期，秒
+      amount: 1 # 变化量
+  # 全服变量
+  # 不会储存到玩家而是储存到服务器缓存，关服时会保存到文件，缓存里没有对应变量值的时候会获得默认值
+  # 所有玩家解析全服变量的结果都是相同的
+  # 可用于设置全服的某种功能门槛，如击败某个全服boss后解锁新的玩法之类
+  server:
+    server1: "false"
 
 Task:
+  # 自动保存
   SaveTask:
     enable: true
     period: 600

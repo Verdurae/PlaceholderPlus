@@ -2,7 +2,7 @@ package org.verdurae.placeholderplus.Object;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.verdurae.placeholderplus.Util.PlayerAPI;
+import org.verdurae.placeholderplus.Util.PlayerUtil;
 import org.verdurae.placeholderplus.PlaceholderPlus;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class PlayerData {
         if (data == null) data = new YamlConfiguration();
         this.data = defaultData(data);
         save();
-        PlayerAPI.playerData.put(name, this);
+        PlayerUtil.playerData.put(name, this);
     }
 
     public FileConfiguration defaultData(FileConfiguration data) {
@@ -37,7 +37,7 @@ public class PlayerData {
 
     public void save() {
         try {
-            data.save(PlaceholderPlus.dataFolder + "/" + name + ".yml");
+            data.save(PlaceholderPlus.playerDataFolder + "/" + name + ".yml");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

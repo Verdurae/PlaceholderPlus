@@ -9,12 +9,12 @@ import org.verdurae.placeholderplus.PlaceholderPlus;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerAPI {
+public class PlayerUtil {
     public static ConcurrentHashMap<String, PlayerData> playerData = new ConcurrentHashMap<>();
 
     public static FileConfiguration getPlayerData(String playername) {
         if (playerData.containsKey(playername)) return playerData.get(playername).data;
-        YamlConfiguration data = YamlConfiguration.loadConfiguration(new File(PlaceholderPlus.dataFolder, playername + ".yml"));
+        YamlConfiguration data = YamlConfiguration.loadConfiguration(new File(PlaceholderPlus.playerDataFolder, playername + ".yml"));
         new PlayerData(playername, data);
         return data;
     }

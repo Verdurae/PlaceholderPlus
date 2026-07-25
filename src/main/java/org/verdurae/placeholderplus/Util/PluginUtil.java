@@ -3,9 +3,9 @@ package org.verdurae.placeholderplus.Util;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.verdurae.placeholderplus.API.Abstract.SubJsPlaceholder;
 import org.verdurae.placeholderplus.Object.PlayerData;
 import org.verdurae.placeholderplus.PlaceholderPlus;
@@ -21,22 +21,44 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
 
-public class PluginAPI {
+public class PluginUtil {
+    public static FileConfiguration serverData = new YamlConfiguration();
+
+    public static void saveServerData() {
+        try {
+            serverData.save(new File(PlaceholderPlus.serverDataFolder, "serverholder.yml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void loadServerData() {
+        File file = new File(PlaceholderPlus.serverDataFolder, "serverholder.yml");
+        if (!file.exists()) {
+            try {
+                serverData.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        serverData = YamlConfiguration.loadConfiguration(file);
+    }
+
     public static void saveAllPlayerData() {
-        for (PlayerData playerData : PlayerAPI.playerData.values()) {
+        for (PlayerData playerData : PlayerUtil.playerData.values()) {
             playerData.save();
         }
     }
 
     public static void loadOnlinePlayerData() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerAPI.getPlayerData(player);
+            PlayerUtil.getPlayerData(player);
         }
     }
 
     public static void loadAllHolder() {
         PlaceholderPlus.expansions.add(new ThisPlaceholder());
-        File JsFolder = new File(PlaceholderPlus.instance.getDataFolder(), "Js");
+        File JsFolder = new File(PlaceholderPlus.dataFolder, "Js");
         JsFolder.mkdirs();
         for (File file : Objects.requireNonNull(JsFolder.listFiles())) {
             if (file.getName().endsWith(".js")) {
@@ -63,22 +85,22 @@ public class PluginAPI {
                     String version = (String) engine.get("version");
                     PlaceholderPlus.expansions.add(new SubJsPlaceholder() {
                         @Override
-                        public @NotNull String getIdentifier() {
+                        public String getIdentifier() {
                             return identifier;
                         }
 
                         @Override
-                        public @NotNull String getAuthor() {
+                        public String getAuthor() {
                             return author;
                         }
 
                         @Override
-                        public @NotNull String getVersion() {
+                        public String getVersion() {
                             return version;
                         }
 
                         @Override
-                        public @NotNull ScriptEngine getEngine() {
+                        public ScriptEngine getEngine() {
                             return engine;
                         }
                     });
@@ -99,8 +121,9 @@ public class PluginAPI {
             expansion.unregister();
         }
     }
+
     public static void loadAllPlayerData() {
-        File[] files = PlaceholderPlus.dataFolder.listFiles();
+        File[] files = PlaceholderPlus.playerDataFolder.listFiles();
         if (files == null) return;
         for (File file : files) {
             if (!file.getName().endsWith(".yml")) continue;

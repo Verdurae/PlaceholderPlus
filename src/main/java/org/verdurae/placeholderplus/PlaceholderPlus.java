@@ -1,15 +1,17 @@
 package org.verdurae.placeholderplus;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.verdurae.placeholderplus.Util.PlayerAPI;
-import org.verdurae.placeholderplus.Util.PluginAPI;
 import org.verdurae.placeholderplus.Command.PlaceholderPlusCommand;
 import org.verdurae.placeholderplus.Object.PlayerData;
+import org.verdurae.placeholderplus.Util.MathUtil;
+import org.verdurae.placeholderplus.Util.PlayerUtil;
+import org.verdurae.placeholderplus.Util.PluginUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,6 +31,8 @@ public final class PlaceholderPlus extends JavaPlugin {
     public static boolean jsSupport = false;
     public static ArrayList<PlaceholderExpansion> expansions = new ArrayList<>();
     public static File dataFolder;
+    public static File serverDataFolder;
+    public static File playerDataFolder;
     public static boolean autosave;
     public static BukkitTask timer;
     public static int timeCount = 0;
@@ -61,19 +65,25 @@ public final class PlaceholderPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         logger.info("开始加载");
-        dataFolder = new File(getDataFolder(), "PlayerData");
-        dataFolder.mkdirs();
-        PluginAPI.loadAllHolder();
-        PluginAPI.loadAllPlayerData();
+        dataFolder = getDataFolder();
+        serverDataFolder = new File(dataFolder, "ServerData");
+        playerDataFolder = new File(dataFolder, "PlayerData");
+        serverDataFolder.mkdirs();
+        playerDataFolder.mkdirs();
+        PluginUtil.loadAllHolder();
+        PluginUtil.loadAllPlayerData();
+        PluginUtil.loadServerData();
         getCommand("pp").setExecutor(new PlaceholderPlusCommand());
+        getCommand("pp").setTabCompleter(new PlaceholderPlusCommand());
         newTimer();
     }
 
     @Override
     public void onDisable() {
         logger.info("插件卸载");
-        PluginAPI.saveAllPlayerData();
-        PluginAPI.unloadAllHolder();
+        PluginUtil.saveAllPlayerData();
+        PluginUtil.saveServerData();
+        PluginUtil.unloadAllHolder();
     }
 
     public static void newTimer() {
@@ -81,17 +91,27 @@ public final class PlaceholderPlus extends JavaPlugin {
             timeCount++;
             if (PlaceholderPlus.config.getBoolean("Task.SaveTask.enable") && timeCount % PlaceholderPlus.config.getInt("Task.SaveTask.period") == 0) {
                 logger.info("正在自动保存数据");
-                for (PlayerData playerData : PlayerAPI.playerData.values()) {
+                for (PlayerData playerData : PlayerUtil.playerData.values()) {
                     playerData.save();
                 }
             }
             ConfigurationSection updates = PlaceholderPlus.config.getConfigurationSection("Placeholders.update");
             for (String update : updates.getKeys(false)) {
                 if (timeCount % PlaceholderPlus.config.getInt("Placeholders.update." + update + ".period") == 0) {
-                    for (PlayerData playerData : PlayerAPI.playerData.values()) {
-                        if (playerData.data.getInt("update." + update) < PlaceholderPlus.config.getInt("Placeholders.update." + update + ".max")) {
+                    for (PlayerData playerData : PlayerUtil.playerData.values()) {
+                        double max = 0;
+                        if (config.isDouble("Placeholders.update." + update + ".max")) {
+                            max = config.getDouble("Placeholders.update." + update + ".max");
+                        } else {
+                            try {
+                                max = Double.parseDouble(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(playerData.name), config.getString("Placeholders.update." + update + ".max")));
+                            } catch (NumberFormatException e) {
+                                max = MathUtil.calculate(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(playerData.name), config.getString("Placeholders.update." + update + ".max"))).doubleValue();
+                            }
+                        }
+                        if (playerData.data.getInt("update." + update) < max) {
                             FileConfiguration data = playerData.data;
-                            data.set("update." + update, data.getInt("update." + update) + PlaceholderPlus.config.getInt("Placeholders.update." + update + ".amount"));
+                            data.set("update." + update, data.getDouble("update." + update) + PlaceholderPlus.config.getDouble("Placeholders.update." + update + ".amount"));
                         }
                     }
                 }
