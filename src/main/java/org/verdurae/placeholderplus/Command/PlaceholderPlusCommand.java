@@ -31,6 +31,7 @@ public class PlaceholderPlusCommand implements CommandExecutor, TabCompleter {
                 PluginUtil.serverData = new YamlConfiguration();
                 PluginUtil.loadAllPlayerData();
                 PluginUtil.loadServerData();
+                PluginUtil.loadAllHolder();
                 PlaceholderPlus.timer.cancel();
                 PlaceholderPlus.newTimer();
                 sender.sendMessage("已重载");

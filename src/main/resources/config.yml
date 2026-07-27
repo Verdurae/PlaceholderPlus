@@ -5,9 +5,9 @@ Setting:
 
 # 要给js变量导的包，新手不建议使用
 JsImportPacket:
-  "Bukkit": "org.bukkit.Bukkit"
-  "Arrays": "java.util.Arrays"
-  "PAPI": "me.clip.placeholderapi.PlaceholderAPI"
+  Bukkit: "org.bukkit.Bukkit"
+  Arrays: "java.util.Arrays"
+  PAPI: "me.clip.placeholderapi.PlaceholderAPI"
 
 # 自定义变量
 # 最终解析的变量是%pp_变量类型_变量名%

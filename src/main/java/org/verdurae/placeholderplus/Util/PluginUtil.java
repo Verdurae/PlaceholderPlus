@@ -3,6 +3,7 @@ package org.verdurae.placeholderplus.Util;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class PluginUtil {
@@ -65,11 +66,9 @@ public class PluginUtil {
                 try {
                     NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
                     ScriptEngine engine = factory.getScriptEngine();
-                    Map<String, Object> value = PlaceholderPlus.config.getValues(true);
-                    for (String key : value.keySet()) {
-                        if (key.startsWith("JsImportPacket.")) {
-                            engine.put(key.replace("JsImportPacket.", ""), Class.forName(key));
-                        }
+                    ConfigurationSection value = PlaceholderPlus.config.getConfigurationSection("JsImportPacket");
+                    for (String key : value.getKeys(false)) {
+                        engine.put(key, Class.forName(value.getString(key)));
                     }
                     InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
                     char[] buffer = new char[1024];
@@ -111,13 +110,13 @@ public class PluginUtil {
                 }
             }
         }
-        for (PlaceholderExpansion expansion : PlaceholderPlus.expansions) {
+        for (PlaceholderExpansion expansion : new ArrayList<>(PlaceholderPlus.expansions)) {
             if (expansion.canRegister()) expansion.register();
         }
     }
 
     public static void unloadAllHolder() {
-        for (PlaceholderExpansion expansion : PlaceholderPlus.expansions) {
+        for (PlaceholderExpansion expansion : new ArrayList<>(PlaceholderPlus.expansions)) {
             expansion.unregister();
         }
     }
