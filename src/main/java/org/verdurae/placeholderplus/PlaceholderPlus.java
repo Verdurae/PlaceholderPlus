@@ -29,7 +29,7 @@ public final class PlaceholderPlus extends JavaPlugin {
     public static Logger logger;
     public static FileConfiguration config;
     public static boolean jsSupport = false;
-    public static ArrayList<PlaceholderExpansion> expansions = new ArrayList<>();
+    public static ArrayList<PlaceholderExpansion> expansions;
     public static File dataFolder;
     public static File serverDataFolder;
     public static File playerDataFolder;

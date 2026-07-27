@@ -58,6 +58,7 @@ public class PluginUtil {
     }
 
     public static void loadAllHolder() {
+        PlaceholderPlus.expansions = new ArrayList<>();
         PlaceholderPlus.expansions.add(new ThisPlaceholder());
         File JsFolder = new File(PlaceholderPlus.dataFolder, "Js");
         JsFolder.mkdirs();
