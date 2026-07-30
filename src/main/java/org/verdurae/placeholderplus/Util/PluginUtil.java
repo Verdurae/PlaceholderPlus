@@ -61,12 +61,15 @@ public class PluginUtil {
         PlaceholderPlus.expansions = new ArrayList<>();
         PlaceholderPlus.expansions.add(new ThisPlaceholder());
         File JsFolder = new File(PlaceholderPlus.dataFolder, "Js");
-        JsFolder.mkdirs();
+        if (!JsFolder.exists()) {
+            PlaceholderPlus.logger.info("生成示例JS文件");
+            PlaceholderPlus.instance.saveResource("Js/exampleJS.js", false);
+        }
         for (File file : Objects.requireNonNull(JsFolder.listFiles())) {
             if (file.getName().endsWith(".js")) {
                 try {
                     NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
-                    ScriptEngine engine = factory.getScriptEngine();
+                    ScriptEngine engine = factory.getScriptEngine(PlaceholderPlus.class.getClassLoader());
                     ConfigurationSection value = PlaceholderPlus.config.getConfigurationSection("JsImportPacket");
                     for (String key : value.getKeys(false)) {
                         engine.put(key, Class.forName(value.getString(key)));
@@ -81,22 +84,28 @@ public class PluginUtil {
                     String scriptContent = builder.toString();
                     engine.eval(scriptContent);
                     String identifier = (String) engine.get("identifier");
+                    identifier = identifier == null ? file.getName().substring(".js".length()) : identifier;
                     String author = (String) engine.get("author");
+                    author = author == null ? "Unknown" : author;
                     String version = (String) engine.get("version");
+                    version = version == null ? "Unknown" : version;
+                    String finalIdentifier = identifier;
+                    String finalAuthor = author;
+                    String finalVersion = version;
                     PlaceholderPlus.expansions.add(new SubJsPlaceholder() {
                         @Override
                         public String getIdentifier() {
-                            return identifier;
+                            return finalIdentifier;
                         }
 
                         @Override
                         public String getAuthor() {
-                            return author;
+                            return finalAuthor;
                         }
 
                         @Override
                         public String getVersion() {
-                            return version;
+                            return finalVersion;
                         }
 
                         @Override

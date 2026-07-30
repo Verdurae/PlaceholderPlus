@@ -28,6 +28,8 @@ public abstract class SubJsPlaceholder extends PlaceholderExpansion {
         if (PlaceholderPlus.jsSupport) {
             PlaceholderPlus.expansions.add(this);
             return super.register();
+        } else {
+            PlaceholderPlus.expansions.remove(this);
         }
         PlaceholderPlus.logger.warning("你的运行Java中没有JS引擎，" + getIdentifier() + "变量终止注册");
         return false;
